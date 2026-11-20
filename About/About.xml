@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>Resource Generator Framework</name>
+  <author>Bambaryla, Shun, Sandwish, Taranchuk</author>
+  <packageId>bambaryla.resourcegeneratorframework</packageId>
+  <supportedVersions>
+    <li>1.7</li>
+  </supportedVersions>
+  <description>This mod adds nothing on its own. Other mods use it to add resource drill buildings.
+
+Each drill works a small underground grid of cells. You drill the cells, shift the grid sideways to find better ones, and go deeper for bigger stacks and rarer resources. Deeper levels cost more work and power and turn up more insect hives, mechanoids and methane pockets.
+
+Mod authors set the drill time, automation, number of workers, resource pool and depth rules per building in XML. It started as a generic, reusable version of the Quarry and Omni Core Drill logic, so you can build as many drills from it as you like.
+
+Docs for modders: https://databobek.github.io/ResourceGeneratorFramework/
+
+Credits: design and idea by Bambaryla. Initial implementation by Shun The Witch, Sandwish, and Taranchuk (basic drill). Later grid-based fun fully by Bamba.
+
+Kudos to Quarry and Omni Core Drill for inspiration.
+
+Compatibility: with [LFS] UI Rethemed - Core active, the drill tab uses the UI Rethemed theme to match its other inspector tabs.</description>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>LazyFridayStudio.UIRethemed.Core</li>
+  </loadAfter>
+</ModMetaData>

@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <ITab_ResourceDrillKeyed>Drill</ITab_ResourceDrillKeyed>
+  <ResourceDrill_Depth>Depth: {0}</ResourceDrill_Depth>
+  <ResourceDrill_PowerDraw>Power draw: {0} W</ResourceDrill_PowerDraw>
+  <ResourceDrill_Workers>Workers: {0} / {1}</ResourceDrill_Workers>
+  <ResourceDrill_Action_None>Idle</ResourceDrill_Action_None>
+  <ResourceDrill_Action_Left>Move one column left</ResourceDrill_Action_Left>
+  <ResourceDrill_Action_Right>Move one column right</ResourceDrill_Action_Right>
+  <ResourceDrill_Action_Up>Drill up</ResourceDrill_Action_Up>
+  <ResourceDrill_Action_Down>Drill deeper</ResourceDrill_Action_Down>
+  <ResourceDrill_Action_Drill>Drill</ResourceDrill_Action_Drill>
+  <ResourceDrill_ActionTip>{0} (work: {1})</ResourceDrill_ActionTip>
+  <ResourceDrill_ActionProgress>{0}: {1}/{2}</ResourceDrill_ActionProgress>
+  <ResourceDrill_Cost>Cost: {0} {1}</ResourceDrill_Cost>
+  <ResourceDrill_DownPowerNote>Each level deeper increases yields but adds {0} W of power draw.</ResourceDrill_DownPowerNote>
+  <ResourceDrill_Cancel>Cancel</ResourceDrill_Cancel>
+  <ResourceDrill_Queue>Queue</ResourceDrill_Queue>
+  <ResourceDrill_ActionInProgress>Another action is already in progress.</ResourceDrill_ActionInProgress>
+  <ResourceDrill_AtSurface>The drill is already at the surface.</ResourceDrill_AtSurface>
+  <ResourceDrill_MaxDepth>The drill cannot go any deeper.</ResourceDrill_MaxDepth>
+  <ResourceDrill_NotEnoughMaterials>Not enough materials: {0} {1} required.</ResourceDrill_NotEnoughMaterials>
+  <ResourceDrill_HivesBreached>The drill breached {0} insectoid hive(s)!</ResourceDrill_HivesBreached>
+  <ResourceDrill_MechsAwakened>The drill awakened {0} mechanoid(s)!</ResourceDrill_MechsAwakened>
+  <ResourceDrill_InfestationLabel>Infestation</ResourceDrill_InfestationLabel>
+  <ResourceDrill_MechChamberLabel>Mechanoid chamber</ResourceDrill_MechChamberLabel>
+  <ResourceDrill_MechChamber>You drilled into a mechanoid chamber!</ResourceDrill_MechChamber>
+  <ResourceDrill_MethaneLabel>Methane pocket</ResourceDrill_MethaneLabel>
+  <ResourceDrill_Methane>You punctured a methane pocket!</ResourceDrill_Methane>
+  <ResourceDrill_QueueTip>{0}
+Click: remove this action
+Right-click: remove all actions after this one</ResourceDrill_QueueTip>
+  <ResourceDrill_Action_DrillColumn>Drill leftmost column</ResourceDrill_Action_DrillColumn>
+  <ResourceDrill_Action_DrillRow>Drill top row</ResourceDrill_Action_DrillRow>
+  <ResourceDrill_Action_DrillCell>Drill selected cell</ResourceDrill_Action_DrillCell>
+  <ResourceDrill_DrillAll>Drill all cells</ResourceDrill_DrillAll>
+  <ResourceDrill_Tip_Methane>Methane pocket: explosive!</ResourceDrill_Tip_Methane>
+  <ResourceDrill_Tip_Hive>Infestation risk!</ResourceDrill_Tip_Hive>
+  <ResourceDrill_Tip_Unknown>::unknown::</ResourceDrill_Tip_Unknown>
+</LanguageData>
+
+
+
+
+
+
+
+

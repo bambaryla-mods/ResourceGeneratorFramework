@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Resource Generator Framework</title>
+<meta name="description" content="A RimWorld 1.7 framework for grid-based resource drill buildings. How it plays, how to add a drill to your mod, and every XML field.">
+<link rel="icon" href="preview.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <p class="eyebrow">RimWorld 1.7 framework</p>
+      <h1>Resource Generator Framework</h1>
+      <p class="lede">Shared code for resource drill buildings. Each drill digs through a small underground grid where you pick cells, shift sideways and go deeper for bigger, rarer finds. You define the buildings in XML; the framework handles the grid, the work, the UI and the hazards.</p>
+      <p class="buttons">
+        <a class="btn primary" href="https://steamcommunity.com/sharedfiles/filedetails/?id=3768286295">Steam Workshop</a>
+        <a class="btn" href="https://github.com/databobek/ResourceGeneratorFramework">Source on GitHub</a>
+      </p>
+    </div>
+    <img class="hero-img" src="preview.png" alt="Resource Generator Framework preview image" width="1134" height="732">
+  </div>
+</header>
+
+<nav class="toc">
+  <div class="wrap">
+    <a href="#play">How a drill plays</a>
+    <a href="#depth">Depth and hazards</a>
+    <a href="#setup">Add a drill to your mod</a>
+    <a href="#fields">Field reference</a>
+    <a href="#extras">Settings and compatibility</a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<section id="play">
+  <h2>How a drill plays</h2>
+  <p>The framework adds no buildings itself. When another mod adds a drill built on it, that drill gets a <em>Drill</em> tab in its inspector showing the grid under it (2x2 by default, any size the modder picks). Each cell holds a resource stack, nothing, or a hazard.</p>
+
+  <div class="grid-demo" aria-label="Example 3 by 2 drill grid">
+    <div class="cell res"><span class="item">Steel</span><span class="qty">x62</span></div>
+    <div class="cell empty"><span class="item">empty</span></div>
+    <div class="cell res vein"><span class="item">Gold</span><span class="qty">x38</span><span class="tag">vein</span></div>
+    <div class="cell hazard"><span class="item">Hive</span><span class="tag">hazard</span></div>
+    <div class="cell res"><span class="item">Uranium</span><span class="qty">x21</span></div>
+    <div class="cell unknown"><span class="item">?</span><span class="tag">hidden</span></div>
+  </div>
+  <p class="caption">An example 3x2 grid. Veins hold double stacks, caverns half. Hidden cells show their contents only when drilled.</p>
+
+  <p>The player queues up to 10 actions. Each one takes work, then resolves:</p>
+  <dl class="actions">
+    <dt>Drill</dt>
+    <dd>Empties the grid and drops everything next to the drill. Depending on the building, the player can also drill just the leftmost column, the top row, or any single cell, for a matching share of the work. Drilling cells that hold nothing gives stone chunks.</dd>
+    <dt>Move left / right</dt>
+    <dd>Shifts the grid one column. A new column is rolled on one side and the column on the other side is lost. Every move damages the drill by half a percent of its max HP per depth level.</dd>
+    <dt>Drill deeper / drill up</dt>
+    <dd>Changes depth by one and rolls a whole new grid. Going deeper can cost materials, taken from unforbidden stacks anywhere on the map.</dd>
+  </dl>
+
+  <p>Manual drills are worked by pawns through a normal work type. Each pawn adds work at their Deep Drilling Speed, and a building with several interaction spots can take several pawns at once. Automatic drills add a fixed amount of work on a timer, no pawns needed. Both stop without power.</p>
+  <p>If Vanilla Expanded Framework is loaded, resources that a nearby pipe net can store (through the drill's own pipe comp or a connector next to it) go into the net first. The rest is placed on the ground.</p>
+</section>
+
+<section id="depth">
+  <h2>Depth and hazards</h2>
+  <p>Every level deeper changes the trade-off:</p>
+  <ul>
+    <li>Stacks grow, through <code>depthYieldMultiplierPerLevel</code> and a log bonus scaled by <code>resourceYield</code>.</li>
+    <li>Rare resources come up more often. Near <code>minDepth</code> the normal weights apply, halfway to <code>maxDepth</code> every resource is equally likely, and at <code>maxDepth</code> the weights are inverted.</li>
+    <li>Every action's work cost is multiplied by the current depth.</li>
+    <li>Power draw rises by <code>powerPerDepth</code> per level. The building's info card shows the draw at its start depth.</li>
+    <li>Hazards get more common, and 2% per level of cells are hidden.</li>
+  </ul>
+
+  <p>Hazards replace a cell's contents and trigger when that cell is drilled. Their odds are set in code, not XML:</p>
+  <table>
+    <thead><tr><th>Hazard</th><th>Chance per cell at depth <i>d</i></th><th>When drilled</th></tr></thead>
+    <tbody>
+      <tr><td>Insect hive</td><td>(5 + <i>d</i>)%, max 50%</td><td>Infestation tunnels, <i>d</i> hives per cell</td></tr>
+      <tr><td>Mechanoid chamber</td><td>(1 + <i>d</i>)%, max 30%</td><td><i>d</i>/2 mechanoids (at least one) that assault the colony</td></tr>
+      <tr><td>Methane pocket</td><td>10%</td><td>Explosion at the drill, radius growing with depth</td></tr>
+    </tbody>
+  </table>
+  <p class="note">Rolls run top to bottom, so each hazard's odds apply only if the ones above it missed.</p>
+</section>
+
+<section id="setup">
+  <h2>Add a drill to your mod</h2>
+  <ol class="steps">
+    <li>Add the framework as a dependency in <code>About.xml</code>. Its package ID is <code>bambaryla.resourcegeneratorframework</code>, and it needs Harmony.</li>
+    <li>Give your building the drill comp and the drill inspector tab.</li>
+    <li>For a manual drill, add a WorkGiverDef so pawns know to work it. Automatic drills (<code>isAutomatic</code> true) skip this.</li>
+  </ol>
+
+  <h3>Building</h3>
+  <p>The drill-specific parts of a ThingDef. The rest (graphics, size, cost, research) is a normal building. A full example is in <code>1.7/Defs/example.xml</code>.</p>
+<pre><code>&lt;ThingDef ParentName="BuildingBase"&gt;
+  &lt;defName&gt;MyMod_Drill&lt;/defName&gt;
+  &lt;tickerType&gt;Normal&lt;/tickerType&gt;
+  &lt;!-- one interaction spot per worker --&gt;
+  &lt;multipleInteractionCellOffsets&gt;
+    &lt;li&gt;(0,0,-2)&lt;/li&gt;
+    &lt;li&gt;(1,0,-2)&lt;/li&gt;
+  &lt;/multipleInteractionCellOffsets&gt;
+  &lt;placeWorkers&gt;
+    &lt;li&gt;PlaceWorker_PreventInteractionSpotOverlap&lt;/li&gt;
+  &lt;/placeWorkers&gt;
+  &lt;inspectorTabs&gt;
+    &lt;li&gt;CVN_EnhancedResourceDrill.ITab_ResourceDrill&lt;/li&gt;
+  &lt;/inspectorTabs&gt;
+  &lt;comps&gt;
+    &lt;li Class="CompProperties_Power"&gt;
+      &lt;compClass&gt;CompPowerTrader&lt;/compClass&gt;
+      &lt;basePowerConsumption&gt;2000&lt;/basePowerConsumption&gt;
+    &lt;/li&gt;
+    &lt;li Class="CVN_EnhancedResourceDrill.CompProperties_ResourceDrill"&gt;
+      &lt;operateJobDef&gt;CVN_OperateResourceDrill&lt;/operateJobDef&gt;
+      &lt;gridWidth&gt;3&lt;/gridWidth&gt;
+      &lt;gridHeight&gt;2&lt;/gridHeight&gt;
+      &lt;preciseDrilling&gt;1&lt;/preciseDrilling&gt;
+      &lt;maxDepth&gt;10&lt;/maxDepth&gt;
+      &lt;powerPerDepth&gt;250&lt;/powerPerDepth&gt;
+      &lt;depthYieldMultiplierPerLevel&gt;0.25&lt;/depthYieldMultiplierPerLevel&gt;
+      &lt;expandDownCostDef&gt;Steel&lt;/expandDownCostDef&gt;
+      &lt;expandDownCostCount&gt;50&lt;/expandDownCostCount&gt;
+      &lt;expandDownCostCountPerDepth&gt;25&lt;/expandDownCostCountPerDepth&gt;
+      &lt;drillableResources&gt;
+        &lt;li&gt;
+          &lt;thingDef&gt;WoodLog&lt;/thingDef&gt;
+          &lt;amount&gt;25~50&lt;/amount&gt;
+          &lt;weight&gt;1&lt;/weight&gt;
+        &lt;/li&gt;
+      &lt;/drillableResources&gt;
+    &lt;/li&gt;
+  &lt;/comps&gt;
+&lt;/ThingDef&gt;</code></pre>
+
+  <h3>Work giver</h3>
+  <p>One per manual drill. <code>DrillThingDef</code> points at your building; <code>DrillJobDef</code> is always <code>CVN_OperateResourceDrill</code>.</p>
+<pre><code>&lt;WorkGiverDef&gt;
+  &lt;defName&gt;MyMod_DrillAtMyDrill&lt;/defName&gt;
+  &lt;label&gt;drill at resource drill&lt;/label&gt;
+  &lt;giverClass&gt;CVN_EnhancedResourceDrill.WorkGiver_DrillAtResourceDrill&lt;/giverClass&gt;
+  &lt;workType&gt;Mining&lt;/workType&gt;
+  &lt;priorityInType&gt;50&lt;/priorityInType&gt;
+  &lt;verb&gt;drill&lt;/verb&gt;
+  &lt;gerund&gt;drilling&lt;/gerund&gt;
+  &lt;requiredCapacities&gt;
+    &lt;li&gt;Manipulation&lt;/li&gt;
+  &lt;/requiredCapacities&gt;
+  &lt;canBeDoneByMechs&gt;true&lt;/canBeDoneByMechs&gt;
+  &lt;modExtensions&gt;
+    &lt;li Class="CVN_EnhancedResourceDrill.DefModExtension_ResourceDrill"&gt;
+      &lt;DrillThingDef&gt;MyMod_Drill&lt;/DrillThingDef&gt;
+      &lt;DrillJobDef&gt;CVN_OperateResourceDrill&lt;/DrillJobDef&gt;
+    &lt;/li&gt;
+  &lt;/modExtensions&gt;
+&lt;/WorkGiverDef&gt;</code></pre>
+</section>
+
+<section id="fields">
+  <h2>Field reference</h2>
+  <p>Every field on <code>CVN_EnhancedResourceDrill.CompProperties_ResourceDrill</code>. Leave a field out to keep its default.</p>
+
+  <h3>Work and automation</h3>
+  <table class="fields">
+    <thead><tr><th>Field</th><th>Default</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td><code>operateJobDef</code></td><td>none</td><td>Set to <code>CVN_OperateResourceDrill</code>. Required for manual drills.</td></tr>
+      <tr><td><code>isAutomatic</code></td><td>false</td><td>The drill works on its own instead of using pawns.</td></tr>
+      <tr><td><code>tickInterval</code></td><td>60</td><td>Automatic drills: how often, in ticks, work is added.</td></tr>
+      <tr><td><code>workPerInterval</code></td><td>1</td><td>Automatic drills: work added each interval.</td></tr>
+      <tr><td><code>workDrill</code></td><td>600</td><td>Work to drill the whole grid. A column, row or cell costs its share.</td></tr>
+      <tr><td><code>workMoveSideways</code></td><td>300</td><td>Work to shift the grid left or right.</td></tr>
+      <tr><td><code>workMoveUp</code></td><td>300</td><td>Work to go up one level.</td></tr>
+      <tr><td><code>workMoveDown</code></td><td>600</td><td>Work to go down one level.</td></tr>
+    </tbody>
+  </table>
+  <p class="note">All work costs are multiplied by the current depth and by the player's work multiplier setting.</p>
+
+  <h3>Grid</h3>
+  <table class="fields">
+    <thead><tr><th>Field</th><th>Default</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td><code>gridWidth</code>, <code>gridHeight</code></td><td>2, 2</td><td>Grid size in cells. Both must be at least 1.</td></tr>
+      <tr><td><code>preciseDrilling</code></td><td>0</td><td>0: drill the whole grid only. 1: also drill the leftmost column or top row. 2: also click any cell to drill it.</td></tr>
+      <tr><td><code>emptyCellChance</code></td><td>0.3</td><td>Chance a cell holds nothing.</td></tr>
+      <tr><td><code>veinChance</code>, <code>veinMultiplier</code></td><td>0.1, 2</td><td>Chance a resource cell is a vein, and its stack multiplier.</td></tr>
+      <tr><td><code>cavernChance</code>, <code>cavernMultiplier</code></td><td>0.1, 0.5</td><td>Chance a resource cell is a cavern, and its stack multiplier.</td></tr>
+      <tr><td><code>stoneChunkDef</code>, <code>stoneChunkCount</code></td><td>ChunkGranite, 2</td><td>What drops when a drill action finds nothing at all.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Depth</h3>
+  <table class="fields">
+    <thead><tr><th>Field</th><th>Default</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td><code>minDepth</code>, <code>maxDepth</code></td><td>1, 10</td><td>How high and how deep the drill can go.</td></tr>
+      <tr><td><code>startDepth</code></td><td>1</td><td>Depth of a newly built drill.</td></tr>
+      <tr><td><code>powerPerDepth</code></td><td>0</td><td>Extra watts for each level past level 1, on top of <code>basePowerConsumption</code>.</td></tr>
+      <tr><td><code>depthYieldMultiplierPerLevel</code></td><td>0</td><td>Stacks are multiplied by <code>1 + depth × value</code>.</td></tr>
+      <tr><td><code>resourceYield</code></td><td>1</td><td>Stacks are also multiplied by <code>1 + value × ln(depth)</code>, so this does nothing at depth 1.</td></tr>
+      <tr><td><code>expandDownCostDef</code></td><td>none</td><td>Material paid to go deeper. Leave empty for free.</td></tr>
+      <tr><td><code>expandDownCostCount</code>, <code>expandDownCostCountPerDepth</code></td><td>0, 0</td><td>Cost to go deeper is <code>count + perDepth × current depth</code>.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Resources</h3>
+  <table class="fields">
+    <thead><tr><th>Field</th><th>Default</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td><code>allowAnyDeepdrillResource</code></td><td>true</td><td>Include every ThingDef with <code>deepCommonality</code> above 0, weighted by it. Stack size is <code>deepCountPerCell</code> × 0.5 to 1.5.</td></tr>
+      <tr><td><code>isInvertWhitelist</code></td><td>false</td><td>With the deep-drill pool on, makes <code>drillableResources</code> a blacklist instead of extra entries.</td></tr>
+      <tr><td><code>drillableResources</code></td><td>none</td><td>A list of entries with <code>thingDef</code>, <code>amount</code> (range, for example <code>25~50</code>) and <code>weight</code> (default 1). Added to the deep-drill pool, or the only resources if <code>allowAnyDeepdrillResource</code> is false.</td></tr>
+    </tbody>
+  </table>
+  <p class="note"><code>baseWorkAmount</code>, <code>isFixedWorkAmount</code>, <code>selectResourceUiIcon</code> and the per-entry <code>fixedWorkAmount</code> and <code>workAmount</code> come from the older select-a-resource drill. They still load so old XML doesn't throw errors, but nothing reads them.</p>
+</section>
+
+<section id="extras">
+  <h2>Settings and compatibility</h2>
+  <p>Players get a yield multiplier and a work multiplier in the mod settings. Both apply to every drill built on the framework.</p>
+  <p>With [LFS] UI Rethemed - Core active, the Drill tab is drawn in that mod's theme. The compat code is a separate assembly loaded through <code>LoadFolders.xml</code> only when Core is active, so there is no hard dependency. If the themed tab throws, it falls back to the vanilla look and logs one warning.</p>
+  <p>Vanilla Expanded Framework's pipe system is picked up through reflection when it is loaded, as described above. It is not required.</p>
+</section>
+
+<section id="credits">
+  <h2>Credits</h2>
+  <p>Design and idea by Bambaryla. The first, basic drill was written by Shun The Witch, Sandwish and Taranchuk; the grid system is by Bambaryla. Inspired by Quarry and Omni Core Drill.</p>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">Resource Generator Framework · <a href="https://github.com/databobek/ResourceGeneratorFramework">GitHub</a> · <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=3768286295">Steam Workshop</a></div>
+</footer>
+
+<script>
+  // Copy buttons on code blocks.
+  document.querySelectorAll('pre').forEach(function (pre) {
+    var btn = document.createElement('button');
+    btn.className = 'copy';
+    btn.type = 'button';
+    btn.textContent = 'Copy';
+    btn.addEventListener('click', function () {
+      navigator.clipboard.writeText(pre.querySelector('code').textContent).then(function () {
+        btn.textContent = 'Copied';
+        setTimeout(function () { btn.textContent = 'Copy'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+</script>
+</body>
+</html>

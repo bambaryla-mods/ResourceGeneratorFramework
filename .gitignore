@@ -1,0 +1,33 @@
+# AI tooling
+.claude/
+.codex/
+.cursor/
+.aider*
+.windsurf/
+.opencode/
+.copilot/
+AGENTS.md
+CLAUDE.md
+GEMINI.md
+
+# Editors
+.vs/
+.idea/
+.vscode/
+*.code-workspace
+.history/
+*.user
+*.suo
+*.DotSettings.user
+
+# Build output (the shipped DLLs in 1.7/Assemblies and Compat/ stay tracked)
+[Bb]in/
+[Oo]bj/
+*.bak
+
+# OS junk
+Thumbs.db
+desktop.ini
+.DS_Store
+*.zip
+*.7z

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!--
+  <ThingDef ParentName="BuildingBase">
+    <defName>BOR_ResourceDrill</defName>
+    <label>crust driller</label>
+    <description>The final upgrade of the deep drilling systems, the crust driller goes deep into the the planetary crust to extract valuable resources.</description>
+    <graphicData>
+      <graphicClass>Graphic_Single</graphicClass>
+      <texPath>BOR/Retextures/drill</texPath>
+      <drawSize>(3.5, 3.5)</drawSize>
+      <drawRotated>false</drawRotated>
+      <shadowData>
+        <volume>(0.52, 0.53, 0.09)</volume>
+        <offset>(0,0,-0.43)</offset>
+      </shadowData>
+      <drawOffset>(0,2,0.112)</drawOffset>
+    </graphicData>
+    <size>(3,3)</size>
+    <tickerType>Normal</tickerType>
+    <altitudeLayer>Building</altitudeLayer>
+    <passability>PassThroughOnly</passability>
+    <pathCost>50</pathCost>
+    <fillPercent>0.5</fillPercent>
+    <multipleInteractionCellOffsets>
+      <li>(0,0,-2)</li>
+    </multipleInteractionCellOffsets>
+    <designationCategory>BOR</designationCategory>
+    <designationHotKey>Misc12</designationHotKey>
+    <rotatable>false</rotatable>
+    <terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+    <constructionSkillPrerequisite>4</constructionSkillPrerequisite>
+    <uiIconOffset>(0, 0.03)</uiIconOffset>
+    <uiIconScale>0.85</uiIconScale>
+    <building>
+      <buildingTags>
+        <li>Production</li>
+      </buildingTags>
+      <destroySound>BuildingDestroyed_Metal_Small</destroySound>
+    </building>
+    <costList>
+      <Plasteel>2000</Plasteel>
+      <ComponentSpacer>10</ComponentSpacer>
+      <BOR_Sunsteel>400</BOR_Sunsteel>
+    </costList>
+    <placeWorkers>
+      <li>PlaceWorker_PreventInteractionSpotOverlap</li>
+    </placeWorkers>
+    <inspectorTabs>
+      <li>CVN_EnhancedResourceDrill.ITab_ResourceDrill</li>
+    </inspectorTabs>
+    <drawPlaceWorkersWhileSelected>true</drawPlaceWorkersWhileSelected>
+    <researchPrerequisites>
+      <li>BOR_Research_Core_Drill</li>
+    </researchPrerequisites>
+    <statBases>
+      <MaxHitPoints>5000</MaxHitPoints>
+      <WorkToBuild>10000</WorkToBuild>
+      <Flammability>0.5</Flammability>
+      <Beauty>-25</Beauty>
+    </statBases>
+    <comps>
+      <li Class="CompProperties_Forbiddable" />
+      <li Class="CompProperties_Flickable" />
+      <li Class="CompProperties_Power">
+        <compClass>CompPowerTrader</compClass>
+        <basePowerConsumption>20000</basePowerConsumption>
+      </li>
+      <li Class="CompProperties_CreatesInfestations" />
+      <li Class="CVN_EnhancedResourceDrill.CompProperties_ResourceDrill">
+        <operateJobDef>CVN_OperateResourceDrill</operateJobDef>
+        <isAutomatic>false</isAutomatic>
+        <tickInterval>60</tickInterval>
+        <workPerInterval>1</workPerInterval>
+        <resourceYield>1</resourceYield>
+        <gridWidth>2</gridWidth>
+        <gridHeight>2</gridHeight>
+        <emptyCellChance>0.3</emptyCellChance>
+        <veinChance>0.1</veinChance>
+        <veinMultiplier>2</veinMultiplier>
+        <cavernChance>0.1</cavernChance>
+        <cavernMultiplier>0.5</cavernMultiplier>
+        <workDrill>600</workDrill>
+        <workMoveSideways>300</workMoveSideways>
+        <workMoveUp>300</workMoveUp>
+        <workMoveDown>600</workMoveDown>
+        <maxDepth>10</maxDepth>
+        <depthYieldMultiplierPerLevel>0.25</depthYieldMultiplierPerLevel>
+        <expandDownCostDef>Steel</expandDownCostDef>
+        <expandDownCostCount>50</expandDownCostCount>
+        <expandDownCostCountPerDepth>25</expandDownCostCountPerDepth>
+        <stoneChunkDef>ChunkGranite</stoneChunkDef>
+        <stoneChunkCount>2</stoneChunkCount>
+        <allowAnyDeepdrillResource>true</allowAnyDeepdrillResource>
+        <isInvertWhitelist>false</isInvertWhitelist>
+        <drillableResources>
+          <li>
+            <thingDef>WoodLog</thingDef>
+            <amount>25~50</amount>
+            <weight>1</weight>
+          </li>
+        </drillableResources>
+      </li>
+    </comps>
+  </ThingDef>
+  -->
+
+</Defs>
