@@ -10,7 +10,20 @@
 </head>
 <body>
 
-<header class="hero">
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="#top">Resource Generator Framework</a>
+    <nav class="tabs" aria-label="Sections">
+      <a href="#play">How a drill plays</a>
+      <a href="#depth">Depth and hazards</a>
+      <a href="#setup">Add a drill</a>
+      <a href="#fields">Field reference</a>
+      <a href="#extras">Settings &amp; compatibility</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero" id="top">
   <div class="wrap hero-grid">
     <div>
       <p class="eyebrow">RimWorld 1.7 framework</p>
@@ -23,17 +36,8 @@
     </div>
     <img class="hero-img" src="preview.png" alt="Resource Generator Framework preview image" width="1134" height="732">
   </div>
-</header>
+</section>
 
-<nav class="toc">
-  <div class="wrap">
-    <a href="#play">How a drill plays</a>
-    <a href="#depth">Depth and hazards</a>
-    <a href="#setup">Add a drill to your mod</a>
-    <a href="#fields">Field reference</a>
-    <a href="#extras">Settings and compatibility</a>
-  </div>
-</nav>
 
 <main class="wrap">
 
@@ -236,14 +240,14 @@
 </main>
 
 <footer>
-  <div class="wrap">Resource Generator Framework · <a href="https://github.com/bambaryla-mods/ResourceGeneratorFramework">GitHub</a> · <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=3768286295">Steam Workshop</a></div>
+  <div class="wrap">Resource Generator Framework by Bambaryla · <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=3768286295">Steam Workshop</a> · <a href="https://github.com/bambaryla-mods/ResourceGeneratorFramework">GitHub</a></div>
   <div class="wrap other-mods">
     <p class="other-mods-title">Other Bamba Mods</p>
     <ul>
-      <li><a href="https://bambaryla-mods.github.io/AllBambaArmors/">Armors For All</a> <a class="ws" href="https://steamcommunity.com/sharedfiles/filedetails/?id=3787547731">Workshop</a></li>
-      <li><a href="https://bambaryla-mods.github.io/AllBambaGuns/">Guns For All</a> <a class="ws" href="https://steamcommunity.com/sharedfiles/filedetails/?id=3782391721">Workshop</a></li>
-      <li><a href="https://bambaryla-mods.github.io/AllBambaMelee/">Melee Weapons For All</a> <a class="ws" href="https://steamcommunity.com/sharedfiles/filedetails/?id=3726524693">Workshop</a></li>
-      <li><a href="https://bambaryla-mods.github.io/AllBambaTurrets/">Turrets For All</a> <a class="ws" href="https://steamcommunity.com/sharedfiles/filedetails/?id=3800286808">Workshop</a></li>
+      <li><a href="https://bambaryla-mods.github.io/AllBambaArmors/">Armors For All Tech Levels</a> <a class="ws" href="https://steamcommunity.com/sharedfiles/filedetails/?id=3787547731">Workshop</a></li>
+      <li><a href="https://bambaryla-mods.github.io/AllBambaGuns/">Guns For All Tech Levels</a> <a class="ws" href="https://steamcommunity.com/sharedfiles/filedetails/?id=3782391721">Workshop</a></li>
+      <li><a href="https://bambaryla-mods.github.io/AllBambaMelee/">Melee Weapons For All Tech Levels</a> <a class="ws" href="https://steamcommunity.com/sharedfiles/filedetails/?id=3726524693">Workshop</a></li>
+      <li><a href="https://bambaryla-mods.github.io/AllBambaTurrets/">Turrets For All Tech Levels</a> <a class="ws" href="https://steamcommunity.com/sharedfiles/filedetails/?id=3800286808">Workshop</a></li>
       <li><a href="https://bambaryla-mods.github.io/RimworldBeyondOurReach/">Beyond Our Reach</a> <a class="ws" href="https://steamcommunity.com/sharedfiles/filedetails/?id=3768354639">Workshop</a></li>
       <li><a href="https://bambaryla-mods.github.io/rimworldExpeditions/">Expeditions</a></li>
       <li><a href="https://bambaryla-mods.github.io/rimworldCommRecruiter/">Comm Recruiter</a></li>
@@ -269,6 +273,25 @@
     });
     pre.appendChild(btn);
   });
+</script>
+<script>
+  // Underlines the tab of the section in view.
+  (function () {
+    var tabs = document.querySelectorAll('.tabs a');
+    if (!('IntersectionObserver' in window) || !tabs.length) return;
+    var byId = {};
+    tabs.forEach(function (a) { byId[a.getAttribute('href').slice(1)] = a; });
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        tabs.forEach(function (a) { a.classList.toggle('on', a === byId[e.target.id]); });
+      });
+    }, { rootMargin: '-15% 0px -75% 0px' });
+    Object.keys(byId).forEach(function (id) {
+      var s = document.getElementById(id);
+      if (s) io.observe(s);
+    });
+  })();
 </script>
 </body>
 </html>
