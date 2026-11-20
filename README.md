@@ -2,7 +2,7 @@
 
 A RimWorld 1.7 framework for resource drill buildings. It adds nothing to the game by itself. Other mods use it to define drills that dig resources out of an underground grid.
 
-Full docs with a field reference and copy-paste XML: https://databobek.github.io/ResourceGeneratorFramework/
+Full docs with a field reference and copy-paste XML: https://bambaryla-mods.github.io/ResourceGeneratorFramework/
 
 ## How a drill plays
 

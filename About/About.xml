@@ -12,7 +12,7 @@ Each drill works a small underground grid of cells. You drill the cells, shift t
 
 Mod authors set the drill time, automation, number of workers, resource pool and depth rules per building in XML. It started as a generic, reusable version of the Quarry and Omni Core Drill logic, so you can build as many drills from it as you like.
 
-Docs for modders: https://databobek.github.io/ResourceGeneratorFramework/
+Docs for modders: https://bambaryla-mods.github.io/ResourceGeneratorFramework/
 
 Credits: design and idea by Bambaryla. Initial implementation by Shun The Witch, Sandwish, and Taranchuk (basic drill). Later grid-based fun fully by Bamba.
 
